@@ -208,7 +208,6 @@ let z =0 ;
 
     //translates the wind directions average from a number to simpler cardinal directions
     function windDirShow(avg){
-        console.log(avg)
         switch (true){
             case (avg > 337 || avg <= 21):
                 return "N"
