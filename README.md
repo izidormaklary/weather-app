@@ -7,10 +7,10 @@
 
 - temperature
 - wind speed 
-- wind directions *still a few bugs here* 
+- wind directions 
 - the weathers state with an index image
 
- 
+ on cards templates.
 
-link the project:
+link to the project:
 https://izidormaklary.github.io/weather-app/
