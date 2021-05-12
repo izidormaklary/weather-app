@@ -1,0 +1,12 @@
+#wrap{
+    height: 100%;
+    padding-top: 40vh;
+    transition: 3s;
+    background-color: rgb(189, 225, 234);
+    margin-bottom: 50px;
+;
+}
+body {
+background-size: cover;
+
+}
