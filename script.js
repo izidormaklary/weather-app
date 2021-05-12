@@ -1,25 +1,20 @@
 (function () {
     const input = document.getElementById("input");
-    const tpl = document.getElementById("tpl").content.cloneNode(true);;
+
     const tplTarget = document.getElementById("tplTarget");
     let d = new Date();
     let i = 0;
-    let arrToday;
-    let day2;
-    let day3;
-    let day4;
-    let day5;
+
     let avgPerDayArr = [];
-    let weatherPerDayArr = [];
+
     let imgSel;
-    let avgToday;
-    let avgDay2;
-    let avgDay3;
-    let avgDay4;
-    let avgDay5;
+
     let l = 0;
     let dayName;
-    function weekdays(){
+
+
+    //variable to display the days based on the date of today, and the repetition of the displayIt function.
+    function weekdays(turn){
 
         let weekday =[];
         weekday[0] = "Sunday";
@@ -29,117 +24,174 @@
         weekday[4] = "Thursday";
         weekday[5] = "Friday";
         weekday[6] = "Saturday";
+        let dayInd = d.getDay()+turn
 
-        dayName = weekday[d.getDay()+i];
-        i++;
+        // small tweak to stay in the boundaries of the weekday array
+        if ( dayInd < 7){
+        dayName = weekday[dayInd];
+        }else {
+            dayName = weekday[dayInd-7];
+        }
     }
 
-
+//the start of the process with getting the input value and running the core functions on pressing the search button
     document.getElementById("run").addEventListener("click", e=>{
         let city = input.value;
-        console.log(city);
-        getWeather(city)
-
+        bgImage(city);
+        getWeather(city);
+        bgNHeader();
 
     });
+
+    //accessing the forecast for the location from the remote API
     async function getWeather(city){
-        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=33577bf7e0092a0167929dc2e64a5874`;
+        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=e07224c4dd36df3b3ecab56342b4470c`;
         const data = await fetch(url);
         let weather = await data.json();
-        console.log(weather)
+
         displayIt (weather);
     }
+
+    //cloning the template and displaying the values from the json file, which are processed beforehand
     function displayIt(weather){
+
         getAvg(weather);
-        for (;i < 5;) {
-            if (i > 6){ i = 0}
+
+        //empty the target before each iteration
+        tplTarget.innerHTML = "";
+
+        //five
+        for (;i < 5;i++) {
+            // selecting the right array object
+            let avgForDay = avgPerDayArr[l];
+
+            // cloning the template selecting the target
             const tpl = document.getElementById("tpl").content.cloneNode(true);
             const tplTarget = document.getElementById("tplTarget");
 
-
+            //selecting the target for the weekdays, then the process then writing it in the element
             const day = tpl.querySelector(".day");
-
-            weekdays();
-
+            weekdays(i);
             day.innerText = dayName;
 
+            // selecting the index image based on the state of the weather, then adding its source
             const img = tpl.querySelector(".image");
-
             selectImage();
             img.setAttribute("src", imgSel)
 
-
-            tpl.getElementById("tempTarget").innerText= avgPerDayArr[l].temp.toFixed(2)+"°C";
-
+            // adding the values from the object properties to the elements accordingly
+            tpl.getElementById("tempTarget").innerText= avgForDay.temp.toFixed(2)+"°C";
+            tpl.getElementById("windTarget").innerText= avgForDay.windDir + " "+avgForDay.windSpeed.toFixed(1)+"km/h";
             tplTarget.appendChild(tpl);
 
             l++;
 
         }
-        console.log(avgPerDayArr);
+        //setting the values to the initial state
+        i=0;
+        l=0;
+        g=0;
+
     }
 
+    // core function which contains most of the functions,
     function getAvg(weather){
+
+        // first an array for the days, it will hab objects with values
+        avgPerDayArr = [];
+
+        // getting the list (40 measurements for 5 days ahead)
         const list = weather.list;
+        r = 0;
+        z = 0;
+        // x has the value of the measurements for today, because the list refreshes everytime a new measurements comes in
+        let x = Math.ceil(( 24 - d.getHours())/3)-1;
+        let arrayOfAll = [];
+        //slicing the array accordingly and adding it to a new array, so every day has the right measurements from the list
+        arrayOfAll.push(list.slice(0, x));
+        arrayOfAll.push(list.slice(x, x+8));
+        arrayOfAll.push(list.slice(x+8, x+16))
+        arrayOfAll.push(list.slice(x+16, x+24))
+        arrayOfAll.push(list.slice(x+24, x+32))
 
-        let x = Math.ceil(( 24 - d.getHours())/3);
+        // iterating through the measurements per day
+        arrayOfAll.forEach(element=> {
+            weatherMainArr(element);
 
-        arrToday = list.slice(0, x);
-        day2 = list.slice(x, x+8);
-        day3 = list.slice(x+8, x+16)
-        day4 = list.slice(x+16, x+24)
-        day5 = list.slice(x+24, x+32)
-        weatherMainArr(arrToday)
-        weatherMainArr(day2)
-        weatherMainArr(day3)
-        weatherMainArr(day4)
-        weatherMainArr(day5)
-        avgPerDay (arrToday, x);
-        avgWindDir (arrToday, x);
-        x = 8;
-        avgPerDay (day2, x );
-        avgPerDay (day3, x );
-        avgPerDay (day4, x );
-        avgPerDay (day5, x );
+            avgPerDay(element, element.length);
 
+            avgWindDir(element, element.length);
 
+            avgWindSpeed(element, element.length)
+            r++;
 
+        })
 
     }
+
+    // avg: getting the measurements (see function name), and calculate the average based on the arrays length
+    let r =0;
     function avgWindDir(day, x){
         let initialValue = 0
         let sum = day.reduce(
-            (accumulator, currentValue) => accumulator + currentValue.main.temp, initialValue);
+            (accumulator, currentValue) => accumulator + currentValue.wind.deg, initialValue);
         let avg = sum/x;
 
-        avgPerDayArr.push({temp: avg})
+
+
+        avgPerDayArr[r].windDir = windDirShow(avg);
+
+
     }
+    // avg ... see above
+let z =0 ;
     function avgPerDay(day, x){
         let initialValue = 0
         let sum = day.reduce(
             (accumulator, currentValue) => accumulator + currentValue.main.temp, initialValue);
         let avg = sum/x;
 
-        avgPerDayArr.push({temp: avg})
+        avgPerDayArr[z].temp = avg;
+        z++;
+
     }
+    // avg ... see above above ;)
+    let g = 0;
+    function avgWindSpeed(day, x){
+        let initialValue = 0
+        let sum = day.reduce(
+            (accumulator, currentValue) => accumulator + currentValue.wind.speed, initialValue);
+        let avg = sum/x;
+
+        avgPerDayArr[g].windSpeed = avg;
+        g++;
+
+    }
+
+    //adding the element from the main description of the weather to a temporary array
     function weatherMainArr(day){
         let states =[];
         day.forEach(element => {
             states.push(element.weather[0].main)
         });
+        console.log(states)
 
-        weatherPerDayArr.push(mode(states));
+        // creating the elements with the values
+        avgPerDayArr.push({state:(mode(states)), temp: "", windDir: "", windSpeed:""})
     }
-    function mode(arr){
 
+    //returns the most represented element from the temporary array
+    function mode(arr){
         return arr.sort((a,b) =>
             arr.filter(v => v===a).length
             - arr.filter(v => v===b).length
         ).pop();
     }
+
+    // this function selects the right img source for the different weathers
     function selectImage(){
-        let current = weatherPerDayArr[l];
-        console.log(current)
+        let current = avgPerDayArr[l].state;
+
         switch (current){
             case "Clear":
                imgSel = "./resources/sun.png";
@@ -153,4 +205,56 @@
 
         }
     }
+
+    //translates the wind directions average from a number to simpler cardinal directions
+    function windDirShow(avg){
+        switch (true){
+            case (avg > 337 || avg <= 21):
+                return "N"
+                break;
+            case (avg > 21 && avg <= 68):
+                return "NE";
+                break;
+            case (avg > 68 && avg <= 112):
+                return "E"
+                break;
+            case (avg > 112 && avg <= 157):
+                return "SE"
+                break;
+            case (avg > 157 && avg <= 202):
+                return "S"
+                break;
+            case (avg > 214 && avg <= 247):
+                return "SW"
+                break;
+            case (avg > 259 && avg <= 292):
+                return "W"
+                break;
+            case (avg > 292 && avg <= 337):
+                return "NW"
+                break;
+        }
+    }
+    // transition from landingpage to nav
+    function bgNHeader(){
+       let wrap = document.getElementById("wrap");
+       wrap.style.height= " auto";
+       wrap.style.paddingTop = "20px";
+       wrap.style.backgroundColor = "rgba(189, 225, 234, 0.60";
+    }
+
+    //setting background image of body to the first search result (input fields value) from the unsplash API
+    async function bgImage (input){
+        const url = `https://api.unsplash.com/search/photos?query=${input}%7D%20building&client_id=FNZDPuqGWIMhhkXhxQoXOT-iLllXdvto_idCPQeRX8s&orientation=landscape`;
+        const data = await fetch(url);
+        let image = await data.json();
+
+        image = image.results[0].urls.regular;
+        const container = document.getElementsByTagName("BODY")[0];
+
+        container.style.backgroundImage= 'url('+image+')';
+
+    }
+
+
 })();
