@@ -1,12 +1,23 @@
 #wrap{
     height: 100%;
     padding-top: 40vh;
-    transition: 3s;
+    transition: 2s ease-out;
     background-color: rgb(189, 225, 234);
     margin-bottom: 50px;
-;
+
 }
 body {
 background-size: cover;
+transition: 1s;
+}
+.heading{
 
+    text-align: center;
+    font-size: 60px;
+    transition: 2s ease-out;
+
+}
+#run{
+    color: white;
+    background-color: rgba(87, 87, 87, 0.77);
 }
