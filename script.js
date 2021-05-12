@@ -174,7 +174,7 @@ let z =0 ;
         day.forEach(element => {
             states.push(element.weather[0].main)
         });
-        console.log(states)
+
 
         // creating the elements with the values
         avgPerDayArr.push({state:(mode(states)), temp: "", windDir: "", windSpeed:""})
@@ -208,6 +208,7 @@ let z =0 ;
 
     //translates the wind directions average from a number to simpler cardinal directions
     function windDirShow(avg){
+        console.log(avg)
         switch (true){
             case (avg > 337 || avg <= 21):
                 return "N"
@@ -227,7 +228,7 @@ let z =0 ;
             case (avg > 214 && avg <= 247):
                 return "SW"
                 break;
-            case (avg > 259 && avg <= 292):
+            case (avg > 247 && avg <= 292):
                 return "W"
                 break;
             case (avg > 292 && avg <= 337):
@@ -241,6 +242,8 @@ let z =0 ;
        wrap.style.height= " auto";
        wrap.style.paddingTop = "20px";
        wrap.style.backgroundColor = "rgba(189, 225, 234, 0.60";
+       document.querySelector(".heading").style.fontSize = "50px";
+
     }
 
     //setting background image of body to the first search result (input fields value) from the unsplash API
