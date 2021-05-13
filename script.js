@@ -8,14 +8,13 @@
     let avgPerDayArr = [];
 
     let imgSel;
-
+    let arrForGr = [];
     let l = 0;
     let dayName;
-
+    let x;
 
     //variable to display the days based on the date of today, and the repetition of the displayIt function.
     function weekdays(turn){
-
         let weekday =[];
         weekday[0] = "Sunday";
         weekday[1] = "Monday";
@@ -27,8 +26,10 @@
         let dayInd = d.getDay()+turn
 
         // small tweak to stay in the boundaries of the weekday array
-        if ( dayInd < 7){
-        dayName = weekday[dayInd];
+        if(turn === 0) {
+            dayName = "Today";
+        }else if( dayInd < 7){
+            dayName = weekday[dayInd];
         }else {
             dayName = weekday[dayInd-7];
         }
@@ -50,6 +51,7 @@
         let weather = await data.json();
 
         displayIt (weather);
+          orderTemp(weather) 
     }
 
     //cloning the template and displaying the values from the json file, which are processed beforehand
@@ -82,8 +84,16 @@
             // adding the values from the object properties to the elements accordingly
             tpl.getElementById("tempTarget").innerText= avgForDay.temp.toFixed(2)+"°C";
             tpl.getElementById("windTarget").innerText= avgForDay.windDir + " "+avgForDay.windSpeed.toFixed(1)+"km/h";
-            tplTarget.appendChild(tpl);
 
+            tplTarget.appendChild(tpl);
+            if (i == 0){
+
+                let chartDiv = document.getElementById("chart_div")
+                let clone = chartDiv.cloneNode(true);
+                clone.classList.add("d-md-block");
+
+                tplTarget.appendChild(clone);
+            }
             l++;
 
         }
@@ -91,7 +101,7 @@
         i=0;
         l=0;
         g=0;
-
+        google.charts.setOnLoadCallback(drawChart);
     }
 
     // core function which contains most of the functions,
@@ -105,7 +115,7 @@
         r = 0;
         z = 0;
         // x has the value of the measurements for today, because the list refreshes everytime a new measurements comes in
-        let x = Math.ceil(( 24 - d.getHours())/3)-1;
+        x = Math.ceil(( 24 - d.getHours())/3);
         let arrayOfAll = [];
         //slicing the array accordingly and adding it to a new array, so every day has the right measurements from the list
         arrayOfAll.push(list.slice(0, x));
@@ -256,6 +266,84 @@ let z =0 ;
 
         container.style.backgroundImage= 'url('+image+')';
 
+    }
+    function orderTemp(weather){
+        arrForGr = [];
+        weather.list.forEach(element =>{
+            arrForGr.push(element.main.temp)
+            })
+    }
+
+    google.charts.load('current', {'packages':['line']});
+
+
+    function drawChart() {
+        console.log(x)
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Day');
+        data.addColumn('number', '°C');
+
+        data.addRows([
+            [1    , arrForGr[0-x] ],
+            [1.125, arrForGr[1-x] ],
+            [1.25 , arrForGr[2-x]],
+            [1.375, arrForGr[3-x] ],
+            [1.5  , arrForGr[4-x] ],
+            [1.625, arrForGr[5-x] ],
+            [1.75 , arrForGr[6-x] ],
+            [1.875, arrForGr[7-x] ],
+
+            [2    , arrForGr[8-x] ],
+            [2.125, arrForGr[9-x] ],
+            [2.25 , arrForGr[10-x] ],
+            [2.375, arrForGr[11-x] ],
+            [2.5  , arrForGr[12-x] ],
+            [2.625, arrForGr[13-x] ],
+            [2.75 , arrForGr[14-x] ],
+            [2.875, arrForGr[15-x] ],
+
+            [3    , arrForGr[16-x] ],
+            [3.125, arrForGr[17-x] ],
+            [3.25 , arrForGr[18-x] ],
+            [3.375, arrForGr[19-x] ],
+            [3.5  , arrForGr[20-x] ],
+            [3.625, arrForGr[21-x] ],
+            [3.75 , arrForGr[22-x] ],
+            [3.875, arrForGr[23-x] ],
+
+            [4    , arrForGr[24-x] ],
+            [4.125, arrForGr[25-x] ],
+            [4.25 , arrForGr[26-x] ],
+            [4.375, arrForGr[27-x] ],
+            [4.5  , arrForGr[28-x] ],
+            [4.625, arrForGr[29-x] ],
+            [4.75 , arrForGr[30-x] ],
+            [4.875, arrForGr[31-x] ],
+
+            [5    , arrForGr[32-x]],
+            [5.125, arrForGr[33-x]],
+            [5.25 , arrForGr[34-x]],
+            [5.375, arrForGr[35-x]],
+            [5.5  , arrForGr[36-x]],
+            [5.625, arrForGr[37-x]],
+            [5.75 , arrForGr[38-x]],
+            [5.875, arrForGr[39-x]],
+
+        ]);
+
+        var options = {
+            chart: {
+                title: 'Temperature changes through the next five day',
+                subtitle: 'in °C'
+            },
+            width: 650,
+            height: 450,
+
+        };
+
+        var chart = new google.charts.Line(document.getElementById('chart_div'));
+
+        chart.draw(data, google.charts.Line.convertOptions(options));
     }
 
 
