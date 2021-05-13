@@ -21,13 +21,14 @@
     </div>
 </div>
 <div class="forecast container" id="forecastCont">
+    <div class="blur"></div>
     <div class="row float-md-start justify-content-around" id="tplTarget">
 
     </div>
 </div>
 <template id="tpl">
 
-        <div class="col-lg-4  col-sm-6 align-content-center p-2 ">
+        <div class="col-lg-3 col-md-6 col-sm-6 align-content-center p-2 ">
             <div class="bg-light rounded p-2 shadow-sm" >
 
                 <img alt="logo" class="d-block mx-auto image" height="100px" src="">
@@ -54,7 +55,8 @@
         </div>
 
 </template>
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<div class="col-lg-8 col-md-12 d-none mx-auto " id="chart_div"></div>
 
 <script src="./script.js"></script>
 </body>
