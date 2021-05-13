@@ -9,6 +9,9 @@
 body {
 background-size: cover;
 transition: 1s;
+    z-index: -4;
+    backdrop-filter: blur(2px);
+
 }
 .heading{
 
