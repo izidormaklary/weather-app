@@ -250,7 +250,8 @@ let z =0 ;
        let wrap = document.getElementById("wrap");
        wrap.style.height= " auto";
        wrap.style.paddingTop = "20px";
-       wrap.style.backgroundColor = "rgba(189, 225, 234, 0.60";
+        wrap.style.marginBottom = "60px";
+        wrap.style.backgroundColor = "rgba(189, 225, 234, 0.60";
        document.querySelector(".heading").style.fontSize = "50px";
 
     }
@@ -336,7 +337,7 @@ let z =0 ;
                 title: 'Temperature changes through the next five day',
                 subtitle: 'in °C'
             },
-            width: 650,
+            width: 600,
             height: 450,
 
         };
