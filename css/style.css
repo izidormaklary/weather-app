@@ -3,7 +3,6 @@
     padding-top: 40vh;
     transition: 2s ease-out;
     background-color: rgb(189, 225, 234);
-    margin-bottom: 50px;
 
 }
 body {
@@ -23,4 +22,7 @@ transition: 1s;
 #run{
     color: white;
     background-color: rgba(87, 87, 87, 0.77);
+}
+.forecast{
+    margin-top: ;
 }
