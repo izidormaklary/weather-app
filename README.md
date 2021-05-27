@@ -10,7 +10,9 @@
 - wind directions 
 - the weathers state with an index image
 
- on cards templates.
+ on card templates.
+
+Also added a graph as an extra. 
 
 link to the project:
 https://izidormaklary.github.io/weather-app/
